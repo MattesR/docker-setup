@@ -366,7 +366,7 @@ def write_python_settings_files(collections, profiling_collections=None, remove_
 
 def write_collection_docker_file(collection, snoop_image, settings_dir, snoop_port,
                                  profiling=False, for_dev=False, pg_port=None,
-                                 autoindex=True, stats=False, flower_port=None):
+                                 autoindex=True, sync=False, stats=False, flower_port=None):
     '''Generate the corresponding collection docker file using the docker template.
 
     :param collection: the collection name
@@ -390,7 +390,10 @@ def write_collection_docker_file(collection, snoop_image, settings_dir, snoop_po
                             os.path.join('profiles', collection) + \
                             '\n      - ./settings/urls.py:/opt/hoover/snoop/snoop/urls.py'
     if autoindex:
-        index_command = '    command: ./manage.py runworkers\n'
+        if not sync:
+            index_command = '    command: ./manage.py runworkers\n'
+        else:
+            index_command = '    command: ./manage.py runworkers -s\n'
     else:
         index_command = '    command: echo "disabled"\n'
     snoop_stats = '\n      - snoop-stats-es' if stats else ''
