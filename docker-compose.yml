@@ -50,3 +50,32 @@ services:
     environment:
       WAIT_HOSTS: search-es:9200, search-pg:5432
       WAIT_HOSTS_TIMEOUT: 60
+      
+  nextcloud-pg:
+    image: postgres:9.6
+    restart: always
+    volumes:
+      - ./volumes/nextcloud-pg/data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      
+  nextcloud:
+    image: nextcloud
+    restart: always
+    volumes:
+      - ./volumes/nextcloud:/var/www/html
+      #- ./collections/nextcloud:/usr/local/DATA
+    depends_on:
+      - nextcloud-pg
+    environment:
+      POSTGRES_DB: 'nextcloud'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: secret
+      POSTGRES_HOST: 'nextcloud-pg'
+     # NEXTCLOUD_DATA_DIR: '/usr/local/DATA'
+    #env_file:
+     #     - ./settings/db.env
+    ports:
+      - "15025:80"        

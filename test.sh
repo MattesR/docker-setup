@@ -31,13 +31,14 @@ then
         fi
     done
 else
-    uservar=date +%s | sha256sum | base64 | head -c 32
-    passvar=date +%s | sha256sum | base64 | head -c 32
+    uservar=  </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
+    passvar=  </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
     
 
 fi
 
 echo "$uservar"
+
 echo "$passvar"
 
 

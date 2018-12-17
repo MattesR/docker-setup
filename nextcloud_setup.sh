@@ -31,8 +31,8 @@ then
         fi
     done
 else
-    uservar=date +%s | sha256sum | base64 | head -c 32
-    passvar=date +%s | sha256sum | base64 | head -c 32
+    uservar= </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
+    passvar= </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
     
 
 fi
@@ -40,10 +40,10 @@ fi
 #install nextcloud via command line. Variables are set in nextcloud.cfg
 
 
-#If you use Docker for Windows and use a bash shell, you have to add winpty in front of all Docker 
-winpty docker-compose exec --user www-data nextcloud php occ  maintenance:install \
+#If you use Docker for Windows and use a bash shell, you have to add winpty in front of all Docker commands. Don't use Windows! 
+docker-compose exec --user www-data nextcloud php occ  maintenance:install \
 --database=$DATABASE_TYPE --database-host=$DATABASE_HOST --database-name=$DATABASE_NAME \
---database-user=$DATABASE_USER \
+--database-user=$DATABASE_USER --database-pass=$DATABASE_PW \
 --admin-user=$uservar --admin-pass=$passvar
 
 
@@ -64,11 +64,11 @@ done < ./settings/nc_setup/disable.cfg
 for i in "${items_to_disable[@]}"
 do
     echo "Disabling $i"
-    winpty docker-compose exec  --user www-data nextcloud php occ app:disable $i
+        docker-compose exec  --user www-data nextcloud php occ app:disable $i
 done
 
 #Create group all
-winpty docker-compose exec --user www-data nextcloud php occ  group:add all 
+docker-compose exec --user www-data nextcloud php occ  group:add all 
 
 echo "done"
 
