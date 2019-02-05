@@ -39,7 +39,7 @@ fi
       
 #install nextcloud via command line. Variables are set in nextcloud.cfg
 
-
+echo "installing Nextcloud"
 #If you use Docker for Windows and use a bash shell, you have to add winpty in front of all Docker commands. Don't use Windows! 
 docker-compose exec --user www-data nextcloud php occ  maintenance:install \
 --database=$DATABASE_TYPE --database-host=$DATABASE_HOST --database-name=$DATABASE_NAME \
@@ -67,8 +67,8 @@ do
         docker-compose exec  --user www-data nextcloud php occ app:disable $i
 done
 
-#Create group all
-docker-compose exec --user www-data nextcloud php occ  group:add all 
+echo "Create nextcloud-sync" 
+docker-compose exec nextcloud php occ user:add --password-from-env --display-name="nextcloud-sync" nextcloud-sync 
 
 echo "done"
 

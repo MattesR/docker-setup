@@ -56,7 +56,7 @@ def get_args():
     parser.add_argument('--stats', action='store_const', const=True, default=False,
                         help='Enable kibana stats.')
     parser.add_argument('--sync', action='store_const', const=True, default=False,
-                        help='Enables automatic synchronization in hoover ')
+                        help='Enables automatic synchronization in hoover -- Should not be used manually -- ')
     args = parser.parse_args()
 
     try:
