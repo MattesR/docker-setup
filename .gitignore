@@ -5,8 +5,9 @@
 /search
 /snoop
 /ui
-/snoop-blobs
 /collections
+/volumes
+/snoop-blobs
 /gnupg
 /.idea
 __pycache__

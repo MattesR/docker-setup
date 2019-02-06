@@ -124,6 +124,3 @@ services:
       - snoop-tika
       - search-es
       - snoop-pg--ncsync  
-    
-    
-      
