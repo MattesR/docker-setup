@@ -1,0 +1,46 @@
+  snoop-pg--ncsync:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: snoop
+      POSTGRES_DATABASE: snoop
+    volumes:
+      - ./volumes/snoop-pg--ncsync/data:/var/lib/postgresql/data
+
+  snoop-worker--ncsync:
+    image: liquidinvestigations/hoover-snoop2
+    volumes:
+      - ./gnupg:/opt/hoover/gnupg
+      - ./collections/ncsync:/opt/hoover/snoop/collection
+      - ./settings/ncsync/snoop-settings.py:/opt/hoover/snoop/snoop/localsettings.py
+      - ./snoop-blobs/ncsync:/opt/hoover/snoop/blobs
+    env_file:
+      - ./settings/ncsync/snoop.env
+    depends_on:
+      - snoop-rabbitmq
+      - snoop-tika
+      - search-es
+      - snoop-pg--ncsync
+    ports:
+      - "15556:5555"
+    command: ./manage.py runworkers -s
+
+  snoop--ncsync:
+    image: liquidinvestigations/hoover-snoop2
+    volumes:
+      - ./gnupg:/opt/hoover/gnupg
+      - ./collections/ncsync:/opt/hoover/snoop/collection
+      - ./volumes/search-es-snapshots:/opt/hoover/es-snapshots
+      - ./settings/ncsync/snoop-settings.py:/opt/hoover/snoop/snoop/localsettings.py
+      - ./snoop-blobs/ncsync:/opt/hoover/snoop/blobs
+    ports:
+      - "45026:80"
+    env_file:
+      - ./settings/ncsync/snoop.env
+    environment:
+      WAIT_HOSTS: search-es:9200, snoop-pg--ncsync:5432
+      WAIT_HOSTS_TIMEOUT: 60
+    depends_on:
+      - snoop-rabbitmq
+      - snoop-tika
+      - search-es
+      - snoop-pg--ncsync
