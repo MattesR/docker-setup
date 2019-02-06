@@ -1,4 +1,5 @@
-*/*
+/*
+/*/
 !.gitignore
 !/ncsync/
 !/nc_setup/
