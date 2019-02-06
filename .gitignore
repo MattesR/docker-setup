@@ -5,16 +5,14 @@
 /search
 /snoop
 /ui
-/collections
-/volumes
 /snoop-blobs
+/collections
 /gnupg
 /.idea
 __pycache__
 *.pyc
 /collection*.txt
 /collection*.sh
-/settings/*/
 /.python-version
 /profiles
 /templates/docker-custom-*.yml
@@ -25,4 +23,3 @@ __pycache__
 /*.tar
 /*.7z
 /*.tgz
-

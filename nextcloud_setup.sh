@@ -5,11 +5,11 @@ echo "Checking Variable settings."
 . ./settings/nc_setup/nextcloud.cfg
 
 #Admin password should be a random hash in the end, or set by the user, for now, I disable setting via cfg
-#if [ -z "$ADMIN_PASSWORD" ]
-#then
-#      echo "You did not enter an admin password, please set an admin password before starting the installation"
-#      exit
-#fi
+# if [ -z "$ADMIN_PASSWORD" ]
+# then
+     # echo "You did not enter an admin password, please set an admin password before starting the installation"
+     # exit
+# fi
 
 echo "running first time installation of nextcloud"
       
@@ -67,9 +67,7 @@ do
         docker-compose exec  --user www-data nextcloud php occ app:disable $i
 done
 
-#Create group all
-docker-compose exec --user www-data nextcloud php occ  group:add all 
+echo "Create nextcloud-sync" 
+docker-compose exec -u www-data nextcloud php occ user:add --password-from-env --display-name="ncsync" ncsync
 
 echo "done"
-
-
