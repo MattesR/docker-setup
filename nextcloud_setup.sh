@@ -38,10 +38,10 @@ echo "Checking Variable settings."
 
 # fi
     
+
 echo "creating directories"
 mkdir -p ./collections/ncsync
 chown -R 33:33 ./collections/ncsync
-
 mkdir -p ./volumes/snoop-pg--ncsyc
 mkdir -p ./volumes/nextcloud
 chown -R 33:33 ./volumes/nextcloud
@@ -49,7 +49,6 @@ chmod g+s ./volumes/nextcloud
 
 
 
-    
 #install nextcloud via command line. Variables are set in nextcloud.cfg
 
 echo "installing Nextcloud"
@@ -89,3 +88,7 @@ docker-compose exec -u www-data nextcloud php occ user:add --password-from-env -
 
 
 echo "done"
+
+docker-compose run --rm snoop--ncsync ./manage.py initcollection 
+
+docker-compose run --rm search ./manage.py addcollection ncsync --index ncsync http://snoop--ncsync/collection/json --public
