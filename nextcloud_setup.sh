@@ -11,32 +11,45 @@ echo "Checking Variable settings."
      # exit
 # fi
 
-echo "running first time installation of nextcloud"
+# echo "running first time installation of nextcloud"
       
-# if the user does not input a uesrname and password for the web-admin, the web admin credentials will be random strings
-read -p $'Set the web-admin Username, leave blank -> no web admin: \n' uservar
-if  ( ! [ -z "$uservar" ] )
-then
-    while [ $passvar != $passvar2 ]
-    do
-        unset passvar
-        unset passvar2
-        read -sp $'Set the Password: \n' passvar
-        read -sp $'Retype, please: \n' passvar2
-        if  [ $passvar != $passvar2 ] 
-        then 
-            echo "passwords don't match"
-        else
-            echo "username and password set"
-        fi
-    done
-else
-    uservar= </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
-    passvar= </dev/urandom tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' | head -c 32  ; 
-    
+# # if the user does not input a uesrname and password for the web-admin, the web admin credentials will be random strings
+# read -p $'Set the web-admin Username, leave blank -> no web admin: \n' uservar
+# if  ( ! [ -z "$uservar" ] )
+# then
+    # while [ $passvar != $passvar2 ]
+    # do
+        # unset passvar
+        # unset passvar2
+        # read -sp $'Set the Password: \n' passvar
+        # read -sp $'Retype, please: \n' passvar2
+        # if  [ $passvar != $passvar2 ] 
+        # then 
+            # echo "passwords don't match"
+        # else
+            # echo "username and password set"
+        # fi
+    # done
+# else
+     uservar="$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 32)";
+     passvar="$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 32)";
+    # echo $uservar
+    # echo $passvar
 
-fi
-      
+# fi
+    
+echo "creating directories"
+mkdir -p ./collections/ncsync
+chown -R 33:33 ./collections/ncsync
+
+mkdir -p ./volumes/snoop-pg--ncsyc
+mkdir -p ./volumes/nextcloud
+chown -R 33:33 ./volumes/nextcloud
+chmod g+s ./volumes/nextcloud
+
+
+
+    
 #install nextcloud via command line. Variables are set in nextcloud.cfg
 
 echo "installing Nextcloud"
@@ -50,6 +63,9 @@ docker-compose exec --user www-data nextcloud php occ  maintenance:install \
 echo "copying custom config file"
 
 cp ./settings/nc_setup/nextcloud_config.php ./$NEXTCLOUD_BASE_DIR/config/custom.config.php
+cp ./settings/nc_setup/liquid ./$NEXTCLOUD_BASE_DIR/themes
+chown -R 33:33 ./volumes/nextcloud
+chmod g+s ./volumes/nextcloud
 
 #Read which apps are to be disabled from disable.cfg and disable the apps.
 #The While loops breaks when using docker-compose exec in in, that's why it's necessary to store the umwanted app in an array first.
@@ -63,7 +79,7 @@ done < ./settings/nc_setup/disable.cfg
 
 for i in "${items_to_disable[@]}"
 do
-    echo "Disabling $i"
+    #echo "Disabling $i"
         docker-compose exec  --user www-data nextcloud php occ app:disable $i
 done
 
