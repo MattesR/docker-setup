@@ -2,5 +2,6 @@
 /*/
 !.gitignore
 !/ncsync/*
-!/nc_setup/*
-!/nc_setup/liquid/*
+!/nc_setup/**
+!/nc_setup/liquid/core/js/*
+!/nc_setup/liquid/core/templates/*
