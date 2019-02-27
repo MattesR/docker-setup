@@ -2,4 +2,6 @@
 /*/
 !.gitignore
 !/ncsync/*
+!/nc_setup
+!/nc_setup/*
 !/nc_setup/**/*
