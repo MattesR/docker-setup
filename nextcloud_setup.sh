@@ -47,7 +47,7 @@ mkdir -p ./volumes/nextcloud
 chown -R 33:33 ./volumes/nextcloud
 chmod g+s ./volumes/nextcloud
 
-
+sleep 15
 
 #install nextcloud via command line. Variables are set in nextcloud.cfg
 
