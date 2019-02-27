@@ -43,9 +43,9 @@ echo "creating directories"
 mkdir -p ./collections/ncsync
 chown -R 33:33 ./collections/ncsync
 mkdir -p ./volumes/snoop-pg--ncsyc
-mkdir -p ./volumes/nextcloud
-chown -R 33:33 ./volumes/nextcloud
-chmod g+s ./volumes/nextcloud
+mkdir -p ./$NEXTCLOUD_BASE_DIR
+chown -R 33:33 ./$NEXTCLOUD_BASE_DIR
+chmod g+s ./$NEXTCLOUD_BASE_DIR
 
 sleep 15
 
@@ -62,9 +62,9 @@ docker-compose exec --user www-data nextcloud php occ  maintenance:install \
 echo "copying custom config file"
 
 cp ./settings/nc_setup/nextcloud_config.php ./$NEXTCLOUD_BASE_DIR/config/custom.config.php
-cp ./settings/nc_setup/liquid ./$NEXTCLOUD_BASE_DIR/themes
-chown -R 33:33 ./volumes/nextcloud
-chmod g+s ./volumes/nextcloud
+cp -r ./settings/nc_setup/liquid ./$NEXTCLOUD_BASE_DIR/themes
+chown -R 33:33 ./$NEXTCLOUD_BASE_DIR/themes/liquid
+chmod g+s ./$NEXTCLOUD_BASE_DIR/themes/liquid
 
 #Read which apps are to be disabled from disable.cfg and disable the apps.
 #The While loops breaks when using docker-compose exec in in, that's why it's necessary to store the umwanted app in an array first.
@@ -79,7 +79,7 @@ done < ./settings/nc_setup/disable.cfg
 for i in "${items_to_disable[@]}"
 do
     #echo "Disabling $i"
-        docker-compose exec  --user www-data nextcloud php occ app:disable $i
+        docker-compose exec  --user www-data nextcloud php occ app:disable $i > /dev/null
 done
 
 echo "Create nextcloud-sync" 
